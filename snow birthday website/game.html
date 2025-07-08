@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Emoji Memory Game</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #0f0f2d;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      color: white;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    .game-board {
+      display: grid;
+      grid-template-columns: repeat(4, 70px);
+      gap: 15px;
+    }
+
+    .card {
+      width: 70px;
+      height: 70px;
+      background: #2f2f4f;
+      font-size: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+      user-select: none;
+    }
+
+    .card.flipped {
+      background: #ffffff;
+    }
+
+    .card.matched {
+      background: #8e44ad;
+      color: white;
+      cursor: default;
+    }
+
+    .card.hidden {
+      color: transparent;
+    }
+  </style>
+</head>
+<body>
+  <h1>😆 Try to finish this Memory Game!</h1>
+  <div class="game-board" id="gameBoard"></div>
+
+<script>
+  const emojis = ["🥰", "😳", "💖", "❤️", "🤍", "😍", "🥱", "🤝"];
+  const gameEmojis = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
+  const board = document.getElementById("gameBoard");
+  let flippedCards = [];
+  let lockBoard = false;
+  let matchedCount = 0;
+
+  gameEmojis.forEach((emoji, index) => {
+    const card = document.createElement("div");
+    card.classList.add("card", "hidden");
+    card.dataset.emoji = emoji;
+    card.innerText = emoji;
+    board.appendChild(card);
+
+    card.addEventListener("click", () => {
+      if (lockBoard || card.classList.contains("flipped") || card.classList.contains("matched")) return;
+
+      card.classList.add("flipped");
+      card.classList.remove("hidden");
+      flippedCards.push(card);
+
+      if (flippedCards.length === 2) {
+        lockBoard = true;
+        const [card1, card2] = flippedCards;
+
+        if (card1.dataset.emoji === card2.dataset.emoji) {
+          card1.classList.add("matched");
+          card2.classList.add("matched");
+          flippedCards = [];
+          lockBoard = false;
+          matchedCount += 2;
+
+          if (matchedCount === gameEmojis.length) {
+            setTimeout(() => {
+              alert("🎉 You finished the game!");
+              window.location.href = "thankyou.html";
+            }, 400);
+          }
+        } else {
+          setTimeout(() => {
+            card1.classList.remove("flipped");
+            card2.classList.remove("flipped");
+            card1.classList.add("hidden");
+            card2.classList.add("hidden");
+            flippedCards = [];
+            lockBoard = false;
+          }, 1000);
+        }
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

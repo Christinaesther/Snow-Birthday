@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mirror of Memories</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(160deg, #0f172a 0%, #1e3a8a 50%, #93c5fd 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      position: relative;
+      overflow: hidden;
+      padding: 40px 20px;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    h1 {
+      font-size: 3em;
+      color: #3b82f6;
+      font-weight: 700;
+      margin-bottom: 25px;
+      text-align: center;
+      z-index: 1;
+    }
+
+    .heart {
+      position: absolute;
+      color: #bae6fd;
+      font-size: 24px;
+      animation: float 6s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
+      50% { transform: translateY(-15px) rotate(10deg); opacity: 1; }
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 30px;
+      padding: 40px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.05);
+      text-align: center;
+      max-width: 900px;
+      width: 95%;
+      backdrop-filter: blur(20px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      z-index: 1;
+    }
+
+    .main-photo {
+      width: 400px;
+      height: 250px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #f0f9ff;
+      border: 3px solid #fff;
+      flex-shrink: 0;
+      position: relative;
+      box-shadow: 0 0 20px #90cdf4, 0 0 30px #cfe9ff;
+      animation: glow 3s ease-in-out infinite;
+    }
+
+    @keyframes glow {
+      0%, 100% {
+        box-shadow: 0 0 20px #90cdf4, 0 0 30px #cfe9ff;
+      }
+      50% {
+        box-shadow: 0 0 30px #3b82f6, 0 0 40px #a0e7ff;
+      }
+    }
+
+.main-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 20px;
+  display: block;
+  background-color: #f0f9ff;
+}
+
+
+
+    .right-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .message {
+  font-size: 1.05em;
+  color: #2563eb;
+  margin: 10px auto;
+  min-height: 150px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 10px;
+  display: block;
+  font-style: italic;
+  text-align: left;
+  line-height: 1.8;
+  max-width: 90%;
+  width: 100%;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.message::-webkit-scrollbar {
+  width: 8px;
+}
+.message::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 10px;
+}
+
+
+
+    .typewriter {
+      display: block;
+      animation: none;
+      white-space: normal;
+      word-break: break-word;
+      max-width: 100%;
+      opacity: 1;
+      border: none;
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent; }
+      50% { border-color: #3b82f6; }
+    }
+
+    .btn-group {
+      margin-top: 20px;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      background: linear-gradient(45deg, #60a5fa, #3b82f6);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 20px rgba(96, 165, 250, 0.3);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(59, 130, 246, 0.4);
+    }
+
+    .page-counter {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      background: rgba(147, 197, 253, 0.2);
+      padding: 8px 15px;
+      border-radius: 15px;
+      font-size: 0.85em;
+      color: #3b82f6;
+      font-weight: 600;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="snowCanvas"></canvas>
+
+<!-- Floating Snowflake Emojis -->
+<div class="heart" style="top: 15%; left: 8%;">❄️</div>
+<div class="heart" style="top: 25%; right: 12%; animation-delay: 1s;">❄️</div>
+<div class="heart" style="bottom: 35%; left: 15%; animation-delay: 2s;">❄️</div>
+<div class="heart" style="bottom: 20%; right: 8%; animation-delay: 3s;">❄️</div>
+<div class="heart" style="top: 60%; left: 5%; animation-delay: 4s;">❄️</div>
+<div class="heart" style="top: 75%; right: 10%; animation-delay: 5s;">❄️</div>
+
+<h1>Mirror of Memories</h1>
+
+<div class="page-counter">
+  <span id="currentPage">1</span> / <span id="totalPages">12</span>
+</div>
+
+<div class="container">
+  <div class="main-photo" id="mainPhoto">
+    <img src="your-image1.jpg" alt="Memory 1" />
+  </div>
+
+  <div class="right-panel">
+    <div class="message">
+      <div class="typewriter" id="messageText">This smile..</div>
+    </div>
+
+    <div class="btn-group" id="buttonGroup">
+      <!-- Buttons go here -->
+    </div>
+  </div>
+</div>
+
+<!-- Sound Effects -->
+<audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-09.mp3" preload="auto"></audio>
+
+<audio id="newBirthdaySong" src="7月8日.mp3" autoplay loop></audio>
+
+<script>
+  let currentPhotoIndex = 0;
+  const photos = [
+  "Arya Stark.jpg", 
+  "esther.jpg", 
+  "Elle Woods.jpg", 
+  "Lydia.jpg", 
+  "amy.jpg", 
+  "saffie.jpg", 
+  "rim.jpg"
+];
+
+  const messages = [
+    `She’s like Arya Stark, if Arya had moonlight in her eyes and stories in her hands.<br>
+    Snow doesn’t follow the path she walks into forests of mystery with a quiet confidence.<br>
+    She’s unreadable, unshaken, unforgettable<br>
+    A rider of sunsets, a keeper of secrets, and the storm that never asks for attention yet always leaves an echo.`,
+
+    `When I was going through a really hard time and felt very low, she always made me feel better.<br>
+    She used her creative talents, like drawing and making cheerful posts, to cheer me up.<br>
+    She made things that brought a smile to my face..<br>
+    So this Luna Lovegood reminds me of Snow! ✨`,
+
+    `This is why I chose Elle Woods for Snow:<br>
+    Elle defies stereotypes, challenging the perception of blondes as unintelligent by becoming a successful law student and lawyer.<br>
+    Her stylish, often pink outfits reflect her bold personality.<br>
+    She's loyal, positive, and full of unexpected intelligence, with sharp legal skills and a strong work ethic.<br>
+    Elle’s journey has made her a feminist icon and a symbol of female empowerment.<br>
+    Plus, her iconic quotes like “What, like it’s hard?” say it all. 💅`,
+
+    `Lydia embraces her quirks and dives headfirst into the unknown, which is exactly why INFPs will adore her.<br>
+    She’s introspective, artistic, and driven to understand the mysteries of life.<br>
+    She doesn’t mind being different and standing out.<br>
+    Lydia’s connection with the afterlife and her desire to uncover hidden truths align perfectly with the INFP’s love of exploring the deeper, unseen layers of reality. 🖤`,
+
+    `When she sang for my birthday, it made me so happy 🥺`,
+
+    `Man, don’t even get me started on my favorite moments with Snow.<br>
+    Like how can I forget those tragic birthday attempts — she was supposed to warm my heart but ended up about to fall into a white cloth, like Tom sliding on snow 💀<br>
+    That wasn’t even cute, that was hella clumsy 💀<br>
+    And her damn glasses? Bro, they didn’t sign up for this chaos. They literally rebel every time and fall off her nose lmao 🤓<br>
+    ALSO — her OBSESSION with Ghani videos??? Girl KNOWS I hate kids but *sigh*<br>
+    Then there’s when she shares a bunch of stuff and keeps talking and talking and won’t shut up 💀<br>
+    Her videos, pics, stories, and facts that might not even be connected to anything BUT SHE WILL NOT STOP.<br>
+    She melts my head... but hey, at least it’s melting because of Snow 🧊<br>
+    Why am I roasting her? Because madam hates praise 🙄<br>
+    So khulasa ye hai: Among Us ho ya mera DM, Snow mera dimaag chatne se baaz nahi aati —<br>
+    <strong>Sare moments hi Snow k saath mere <em>unfavorite</em> hain.</strong> 💀❄️`,
+
+    `Janmo ke saathi, ham saath saath hai 👨🏽‍🎤💗`
+  ];
+
+  const clickSound = document.getElementById("clickSound");
+
+  function displayPhoto() {
+    const mainPhoto = document.getElementById('mainPhoto');
+    const messageText = document.getElementById('messageText');
+    const message = messages[currentPhotoIndex];
+
+    mainPhoto.innerHTML = `<img src="${photos[currentPhotoIndex]}" alt="Memory ${currentPhotoIndex + 1}">`;
+
+    messageText.style.animation = 'none';
+    void messageText.offsetWidth;
+
+    if (message.length < 120) {
+      messageText.innerHTML = `<span class="typewriter">${message}</span>`;
+      messageText.style.animation = 'typing 1s steps(25, end), blink-caret 0.75s step-end infinite';
+    } else {
+      messageText.innerHTML = `<div class="typewriter">${message}</div>`;
+    }
+
+    document.getElementById('currentPage').textContent = currentPhotoIndex + 1;
+    renderButtons();
+  }
+
+  function nextPhoto() {
+    if (currentPhotoIndex < photos.length - 1) {
+      currentPhotoIndex++;
+      displayPhoto();
+      clickSound.play();
+    }
+  }
+
+  function prevPhoto() {
+    if (currentPhotoIndex > 0) {
+      currentPhotoIndex--;
+      displayPhoto();
+      clickSound.play();
+    }
+  }
+
+  function renderButtons() {
+    const btnGroup = document.getElementById('buttonGroup');
+    btnGroup.innerHTML = '';
+
+    if (currentPhotoIndex > 0) {
+      const prevBtn = document.createElement('button');
+      prevBtn.className = 'btn';
+      prevBtn.innerText = 'Previous';
+      prevBtn.onclick = prevPhoto;
+      btnGroup.appendChild(prevBtn);
+    }
+
+    if (currentPhotoIndex < photos.length - 1) {
+      const nextBtn = document.createElement('button');
+      nextBtn.className = 'btn';
+      nextBtn.innerText = 'Next';
+      nextBtn.onclick = nextPhoto;
+      btnGroup.appendChild(nextBtn);
+    }
+
+    if (currentPhotoIndex === photos.length - 1) {
+      const endBtn = document.createElement('button');
+      endBtn.className = 'btn';
+      endBtn.innerText = 'Click for next page';
+      endBtn.onclick = () => {
+        clickSound.play();
+        window.location.href = "game.html";
+      };
+      btnGroup.appendChild(endBtn);
+    }
+  }
+
+  const canvas = document.getElementById("snowCanvas");
+  const ctx = canvas.getContext("2d");
+  let width = canvas.width = window.innerWidth;
+  let height = canvas.height = window.innerHeight;
+  let snowflakes = [];
+
+  function createSnowflakes() {
+    for (let i = 0; i < 150; i++) {
+      snowflakes.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 4 + 1,
+        speedY: Math.random() * 1 + 0.5
+      });
+    }
+  }
+
+  function drawSnowflakes() {
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = "#bae6fd";
+    ctx.beginPath();
+    for (let flake of snowflakes) {
+      ctx.moveTo(flake.x, flake.y);
+      ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+    }
+    ctx.fill();
+    moveSnowflakes();
+  }
+
+  function moveSnowflakes() {
+    for (let flake of snowflakes) {
+      flake.y += flake.speedY;
+      if (flake.y > height) {
+        flake.y = 0;
+        flake.x = Math.random() * width;
+      }
+    }
+  }
+
+  function updateCanvasSize() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  }
+
+  window.addEventListener("resize", updateCanvasSize);
+
+  createSnowflakes();
+  setInterval(drawSnowflakes, 50);
+  displayPhoto();
+
+  
+  window.addEventListener('load', () => {
+    const song = document.getElementById('newBirthdaySong');
+    if (song) {
+      song.play().catch(err => {
+        // Autoplay might be blocked, handle silently
+        console.log('Autoplay blocked:', err);
+      });
+    }
+  });
+
+</script>
+</body>
+</html>

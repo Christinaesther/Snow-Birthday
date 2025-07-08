@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="snowman.png" />
+  <title>Snow's Icy Cake</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(to top left, #6a5acd, #cceeff);
+    }
+
+
+     body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(224,247,250,0.4), rgba(176,224,230,0.4));
+      z-index: 0;
+    }
+
+    @keyframes cakePopUp {
+      0% { transform: scale(0); opacity: 0; }
+      60% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    #fireworkCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .cake {
+      position: relative;
+      width: 250px;
+      height: 250px;
+      z-index: 3;
+      animation: cakePopUp 1s ease-out;
+      display: none;
+    }
+
+    .plate {
+      width: 280px;
+      height: 15px;
+      background: linear-gradient(to right, #d6e6f2, #ffffff, #d6e6f2);
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+
+    .layer-1 {
+      width: 220px;
+      height: 70px;
+      background: linear-gradient(to bottom, #d0f0ff, #a6d8f0);
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 10px 10px 5px 5px;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1) inset;
+    }
+
+    .layer-2 {
+      width: 190px;
+      height: 60px;
+      background: linear-gradient(to bottom, #e0f7fa, #b3e5fc);
+      position: absolute;
+      bottom: 85px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 10px 10px 5px 5px;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1) inset;
+    }
+
+    .layer-3 {
+      width: 160px;
+      height: 50px;
+      background: linear-gradient(to bottom, #f0faff, #d0ecf7);
+      position: absolute;
+      bottom: 145px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 10px 10px 5px 5px;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1) inset;
+    }
+
+    .decoration {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .decoration-1 { background-color: #b3e5fc; bottom: 45px; left: 35%; }
+    .decoration-2 { background-color: #a2d4ec; bottom: 60px; left: 70%; }
+    .decoration-3 { background-color: #e1f5fe; bottom: 115px; left: 40%; }
+    .decoration-4 { background-color: #b3e5fc; bottom: 130px; left: 65%; }
+    .decoration-5 { background-color: #a2d4ec; bottom: 170px; left: 45%; }
+    .decoration-6 { background-color: #e1f5fe; bottom: 175px; left: 60%; }
+
+    .candles {
+      position: absolute;
+      bottom: 195px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 15px;
+      width: 150px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .candle {
+      width: 8px;
+      height: 35px;
+      position: relative;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .candle:nth-child(1) { background: linear-gradient(to bottom, #d0f0ff, #b0e0ff); }
+    .candle:nth-child(2) { background: linear-gradient(to bottom, #e0f7fa, #cceeff); }
+    .candle:nth-child(3) { background: linear-gradient(to bottom, #f0faff, #d8f3ff); }
+    .candle:nth-child(4) { background: linear-gradient(to bottom, #d0f0ff, #b0e0ff); }
+    .candle:nth-child(5) { background: linear-gradient(to bottom, #e0f7fa, #cceeff); }
+    .candle:nth-child(6) { background: linear-gradient(to bottom, #f0faff, #d8f3ff); }
+    .candle:nth-child(7) { background: linear-gradient(to bottom, #d0f0ff, #b0e0ff); }
+
+    .candle::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(#fff8dc, #ffcc70);
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  animation: flicker 1.5s infinite;
+  box-shadow: 0 0 10px #ffd700, 0 0 20px #ffa500;
+}
+
+
+    @keyframes flicker {
+      0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+      50% { opacity: 0.8; transform: translateX(-50%) scale(0.9); }
+    }
+
+    .candle.blown::before {
+      background-color: #ccc;
+      animation: none;
+      opacity: 0;
+      box-shadow: none;
+    }
+
+   .fireworks {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: none;
+  z-index: 1; /* ✅ Behind cake which is z-index: 3 */
+}
+
+.balloon {
+  position: absolute;
+  width: 30px;
+  height: 40px;
+  border-radius: 50%;
+  animation: balloon-float 5s ease-in-out infinite;
+  opacity: 0.9;
+}
+
+.balloon-1 { background-color: #cceeff; box-shadow: 0 0 10px #cceeff; }
+.balloon-2 { background-color: #a2d4ec; box-shadow: 0 0 10px #a2d4ec; }
+.balloon-3 { background-color: #e0f7fa; box-shadow: 0 0 10px #e0f7fa; }
+
+
+
+
+    .firework-ball {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      opacity: 0;
+      transform-origin: center;
+      animation: firework-ball-animation 2s ease-out forwards;
+    }
+
+    .firework-ball-1 { background-color: #a2d4ec; }
+    .firework-ball-2 { background-color: #b3e5fc; }
+    .firework-ball-3 { background-color: #e0f7fa; }
+
+    @keyframes firework-ball-animation {
+      0% { opacity: 1; transform: scale(1) translate(0, 0); }
+      100% { opacity: 0; transform: scale(2) translate(var(--random-x), var(--random-y)); }
+    }
+
+    .balloon {
+      position: absolute;
+      width: 30px;
+      height: 40px;
+      border-radius: 50%;
+      animation: balloon-float 4s ease-in-out infinite;
+    }
+
+    .balloon-1 { background-color: #cceeff; }
+    .balloon-2 { background-color: #a2d4ec; }
+    .balloon-3 { background-color: #e0f7fa; }
+
+    @keyframes balloon-float {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(0, -200px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    .heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #add8e6;
+      clip-path: polygon(50% 0%, 0% 35%, 50% 100%, 100% 35%);
+      animation: heart-float 4s ease-in-out infinite;
+    }
+
+    @keyframes heart-float {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(0, -250px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    .message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2rem;
+      color: #0077b6;
+      opacity: 0;
+      transition: opacity 1s;
+      background: linear-gradient(135deg, #f0faff, #e0f7fa);
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      width: 320px;
+      text-align: center;
+      z-index: 3;
+      border: 3px solid #b3e5fc;
+    }
+
+    .wishes-prompt {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2.2rem;
+      color: #00bcd4;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      width: 340px;
+      text-align: center;
+      z-index: 3;
+      border: 4px dashed #b2ebf2;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.05); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    #birthdayAudio {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      opacity: 0.6;
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background-color: #b3e5fc;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #b3e5fc;
+      animation: sparkle 1.5s infinite;
+    }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: 0; transform: scale(0.5); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+  .continue-button {
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    background-color: #00bcd4;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    z-index: 4;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transition: background-color 0.3s;
+    animation: pulse 1.5s infinite;
+  }
+
+  .continue-button:hover {
+    background-color: #008c9e;
+  }
+</style>
+
+  </style>
+</head>
+<body>
+
+    <button id="continueBtn" style="display: none;" class="continue-button">NEXT!! 🎁</button>
+
+     <canvas id="fireworkCanvas"></canvas>
+
+  <div id="wishesPrompt" class="wishes-prompt">
+    Make a wish, Snow! ❄️<br />
+    <span style="font-size: 1.2rem; display: block; margin-top: 10px;">Close your eyes and make a wish...</span>
+  </div>
+
+  <div class="cake" id="birthdayCake">
+    <div class="plate"></div>
+    <div class="layer-1"></div>
+    <div class="layer-2"></div>
+    <div class="layer-3"></div>
+    <div class="decoration decoration-1"></div>
+    <div class="decoration decoration-2"></div>
+    <div class="decoration decoration-3"></div>
+    <div class="decoration decoration-4"></div>
+    <div class="decoration decoration-5"></div>
+    <div class="decoration decoration-6"></div>
+    <div class="candles">
+      <div class="candle" data-blown="false"></div>
+      <div class="candle" data-blown="false"></div>
+      <div class="candle" data-blown="false"></div>
+      <div class="candle" data-blown="false"></div>
+      <div class="candle" data-blown="false"></div>
+      <div class="candle" data-blown="false"></div>
+      <div class="candle" data-blown="false"></div>
+    </div>
+  </div>
+
+  <div class="message" id="birthdayMessage">
+    ❄️ Happy Birthday, Zahirah! ❄️
+    <div style="font-size: 1.2rem; margin-top: 10px;">Wishing you a magical, chilly-sweet day! 💙</div>
+  </div>
+
+  <div class="fireworks" id="fireworksContainer"></div>
+
+  <audio id="birthdayAudio" controls>
+    <source src="Zahira Birthday Song  Happy Birthday to You.mp3" type="audio/mpeg" />
+    Your browser does not support the audio element.
+  </audio>
+
+   <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const wishesPrompt = document.getElementById('wishesPrompt');
+    const birthdayCake = document.getElementById('birthdayCake');
+    const candles = document.querySelectorAll('.candle');
+    const birthdayMessage = document.getElementById('birthdayMessage');
+    const fireworksContainer = document.getElementById('fireworksContainer');
+    const birthdayAudio = document.getElementById('birthdayAudio');
+
+    birthdayAudio.style.display = 'none';
+
+    let songStarted = false;
+
+    setTimeout(() => {
+      wishesPrompt.style.display = 'none';
+      birthdayCake.style.display = 'block';
+      triggerFireworks(); // 🎆 Fireworks start when cake appears
+    }, 3000);
+
+    candles.forEach(candle => {
+      candle.addEventListener('click', () => {
+        if (candle.getAttribute('data-blown') === 'false') {
+          candle.classList.add('blown');
+          candle.setAttribute('data-blown', 'true');
+
+          if (!songStarted) {
+            birthdayAudio.play();
+            songStarted = true;
+          }
+
+          checkAllBlown();
+        }
+      });
+    });
+
+  function checkAllBlown() {
+  const allBlown = Array.from(candles).every(c => c.getAttribute('data-blown') === 'true');
+  if (allBlown) {
+    birthdayMessage.style.opacity = '1';
+    addSparkles();
+
+    // 🎁 Show continue button
+    const continueBtn = document.getElementById('continueBtn');
+    continueBtn.style.display = 'block';
+
+    continueBtn.addEventListener('click', () => {
+      window.location.href = "message.html";
+    });
+  }
+}
+
+
+
+    function addSparkles() {
+      for (let i = 0; i < 20; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.classList.add('sparkle');
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 150 + Math.random() * 50;
+        const x = Math.cos(angle) * distance;
+        const y = Math.sin(angle) * distance;
+        sparkle.style.left = `calc(50% + ${x}px)`;
+        sparkle.style.top = `calc(50% + ${y}px)`;
+        sparkle.style.animationDelay = `${Math.random() * 2}s`;
+        document.body.appendChild(sparkle);
+      }
+    }
+
+    function triggerFireworks() {
+      fireworksContainer.style.display = 'block';
+      for (let i = 0; i < 30; i++) createFireworkBall();
+      for (let i = 0; i < 10; i++) {
+        createBalloon();
+        createHeart();
+      }
+    }
+
+    function createFireworkBall() {
+      const ball = document.createElement('div');
+      const type = Math.floor(Math.random() * 3) + 1;
+      ball.classList.add('firework-ball', `firework-ball-${type}`);
+      const x = (Math.random() - 0.5) * 1000;
+      const y = (Math.random() - 0.5) * 1000;
+      ball.style.setProperty('--random-x', `${x}px`);
+      ball.style.setProperty('--random-y', `${y}px`);
+      ball.style.animationDelay = `${Math.random() * 2}s`;
+      fireworksContainer.appendChild(ball);
+    }
+
+    function createBalloon() {
+      const balloon = document.createElement('div');
+      const type = Math.floor(Math.random() * 3) + 1;
+      balloon.classList.add('balloon', `balloon-${type}`);
+      balloon.style.left = `${Math.random() * 100}%`;
+      balloon.style.top = `${Math.random() * 100}%`;
+      fireworksContainer.appendChild(balloon);
+    }
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.style.left = `${Math.random() * 100}%`;
+      heart.style.top = `${Math.random() * 100}%`;
+      fireworksContainer.appendChild(heart);
+    }
+
+    // 🎆 Canvas-based Fireworks Code Start
+    const canvas = document.getElementById("fireworkCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    const fireworks = [];
+    const particles = [];
+
+    function random(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function Firework() {
+      this.x = canvas.width / 2;
+      this.y = canvas.height;
+      this.targetX = random(0, canvas.width);
+      this.targetY = random(0, canvas.height / 2);
+      this.speed = 3;
+      this.angle = Math.atan2(this.targetY - this.y, this.targetX - this.x);
+      this.distanceToTarget = Math.hypot(this.targetX - this.x, this.targetY - this.y);
+      this.traveled = 0;
+      this.boomed = false;
+
+      this.update = function () {
+        const vx = Math.cos(this.angle) * this.speed;
+        const vy = Math.sin(this.angle) * this.speed;
+        this.x += vx;
+        this.y += vy;
+        this.traveled += Math.hypot(vx, vy);
+        if (this.traveled >= this.distanceToTarget) {
+          this.boomed = true;
+          for (let i = 0; i < 100; i++) {
+            particles.push(new Particle(this.targetX, this.targetY));
+          }
+        }
+      };
+
+      this.draw = function () {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = "white";
+        ctx.fill();
+      };
+    }
+
+    function Particle(x, y) {
+      this.x = x;
+      this.y = y;
+      this.radius = 2;
+      this.speed = random(1, 5);
+      this.angle = random(0, Math.PI * 2);
+      this.life = 100;
+      this.opacity = 1;
+
+      this.update = function () {
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed;
+        this.life -= 1;
+        this.opacity = this.life / 100;
+      };
+
+      this.draw = function () {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+        ctx.fill();
+      };
+    }
+
+    function animateFireworks() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (Math.random() < 0.05) {
+        fireworks.push(new Firework());
+      }
+
+      fireworks.forEach((fw, index) => {
+        fw.update();
+        fw.draw();
+        if (fw.boomed) fireworks.splice(index, 1);
+      });
+
+      particles.forEach((p, index) => {
+        p.update();
+        p.draw();
+        if (p.life <= 0) particles.splice(index, 1);
+      });
+
+      requestAnimationFrame(animateFireworks);
+    }
+
+    animateFireworks();
+    // 🎆 Canvas-based Fireworks Code End
+  });
+  </script>
+</body>
+</html>
+
+</body>
+</html>

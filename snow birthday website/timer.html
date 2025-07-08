@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Snowy Birthday Countdown</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #87ceeb 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .snowflake {
+      position: absolute;
+      color: white;
+      font-size: 1em;
+      animation: fall linear infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(-100vh) rotate(0deg); }
+      100% { transform: translateY(100vh) rotate(360deg); }
+    }
+
+    .container {
+      text-align: center;
+      z-index: 10;
+      position: relative;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .title {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      background: linear-gradient(45deg, #ffffff, #87ceeb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: glow 2s ease-in-out infinite alternate, bounceIn 0.6s ease-in-out;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(135, 206, 235, 0.6); }
+      to { text-shadow: 0 0 15px rgba(255, 255, 255, 1), 0 0 25px rgba(135, 206, 235, 0.8); }
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      margin-bottom: 40px;
+      opacity: 0.9;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+      animation: bounceIn 0.8s ease-in-out;
+    }
+
+    .countdown {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .time-unit {
+      background: rgba(255, 255, 255, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 15px;
+      padding: 20px;
+      min-width: 120px;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .time-unit:hover {
+      transform: translateY(-5px);
+    }
+
+    .time-number {
+      font-size: 3rem;
+      font-weight: bold;
+      display: block;
+      background: linear-gradient(45deg, #ffffff, #e0f6ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .time-label {
+      font-size: 1rem;
+      opacity: 0.8;
+      margin-top: 5px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .message {
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+      opacity: 0.9;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      animation: bounceIn 0.6s ease-in-out;
+    }
+
+    .btn-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .notify-btn {
+      padding: 12px 25px;
+      background: linear-gradient(45deg, #4facfe, #00f2fe);
+      border: none;
+      border-radius: 25px;
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      display: none;
+    }
+
+    .notify-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .decorative-elements {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .snowman {
+      position: absolute;
+      bottom: 50px;
+      left: 50px;
+      font-size: 4rem;
+      opacity: 0.6;
+      animation: sway 3s ease-in-out infinite;
+    }
+
+    .tree {
+      position: absolute;
+      bottom: 50px;
+      right: 50px;
+      font-size: 4rem;
+      opacity: 0.6;
+      animation: sway 4s ease-in-out infinite reverse;
+    }
+
+    @keyframes sway {
+      0%, 100% { transform: rotate(-2deg); }
+      50% { transform: rotate(2deg); }
+    }
+
+    @media (max-width: 768px) {
+      .title { font-size: 2rem; }
+      .countdown { gap: 15px; }
+      .time-unit { min-width: 80px; padding: 15px; }
+      .time-number { font-size: 2rem; }
+      .container { padding: 30px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="decorative-elements">
+    <div class="snowman">⛄</div>
+    <div class="tree">🌲</div>
+  </div>
+
+  <div class="container">
+    <h1 class="title">🎂 Birthday Countdown 🎂</h1>
+    <p class="subtitle">Something amazing is coming!</p>
+
+    <div class="countdown">
+      <div class="time-unit">
+        <span class="time-number" id="days">00</span>
+        <span class="time-label">Days</span>
+      </div>
+      <div class="time-unit">
+        <span class="time-number" id="hours">00</span>
+        <span class="time-label">Hours</span>
+      </div>
+      <div class="time-unit">
+        <span class="time-number" id="minutes">00</span>
+        <span class="time-label">Minutes</span>
+      </div>
+      <div class="time-unit">
+        <span class="time-number" id="seconds">05</span>
+        <span class="time-label">Seconds</span>
+      </div>
+    </div>
+
+    <p class="message">Get ready to celebrate an amazing day! ❄️</p>
+
+    <div class="btn-section">
+      <button class="notify-btn" id="nextBtn">🎁 Click next for the surprise</button>
+    </div>
+  </div>
+
+  <!-- Tick sound -->
+  <audio id="tickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_3d5d64aa74.mp3?filename=pop-94319.mp3"></audio>
+
+  <script>
+    function createSnowflakes() {
+      const snowflakes = ['❄', '❅', '❆', '✦', '✧', '✩'];
+      for (let i = 0; i < 50; i++) {
+        const snowflake = document.createElement('div');
+        snowflake.className = 'snowflake';
+        snowflake.innerHTML = snowflakes[Math.floor(Math.random() * snowflakes.length)];
+        snowflake.style.left = Math.random() * 100 + '%';
+        snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
+        snowflake.style.opacity = Math.random();
+        snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
+        snowflake.style.animationDelay = Math.random() * 2 + 's';
+        document.body.appendChild(snowflake);
+      }
+    }
+
+    function start5SecCountdown() {
+  let countdown = 5;
+  const tick = document.getElementById("tickSound");
+  const allowTick = sessionStorage.getItem("allowTick");
+
+  document.getElementById('seconds').textContent = countdown.toString().padStart(2, '0');
+  document.getElementById('minutes').textContent = '00';
+  document.getElementById('hours').textContent = '00';
+  document.getElementById('days').textContent = '00';
+
+  if (tick && allowTick === 'true') {
+    tick.currentTime = 0;
+    tick.play().catch(() => {});
+  }
+
+  const interval = setInterval(() => {
+    countdown--;
+    document.getElementById('seconds').textContent = countdown.toString().padStart(2, '0');
+
+    if (countdown >= 0 && tick && allowTick === 'true') {
+      tick.currentTime = 0;
+      tick.play().catch(() => {});
+    }
+
+    if (countdown === 0) {
+      clearInterval(interval);
+      document.getElementById('nextBtn').style.display = 'inline-block';
+    }
+  }, 1000);
+}
+
+document.getElementById('nextBtn').addEventListener('click', function () {
+  window.location.href = 'candle.html';
+});
+
+
+
+
+    createSnowflakes();
+    start5SecCountdown();
+  </script>
+</body>
+</html>
