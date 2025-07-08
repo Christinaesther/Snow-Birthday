@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="icon" type="image/png" href="snowman.png" />
+  <title>Snow's Birthday!!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Lobster+Two&family=Quicksand:wght@400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    
+    html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+body {
+  font-family: 'Arial', sans-serif;
+  background: url("snow bg.jpeg") no-repeat center center fixed;
+  background-size: cover;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
+}
+
+
+
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 0;
+    }
+
+    #fireworkCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      z-index: 100;
+    }
+
+    .hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  padding: 20px 20px 40px 20px; /* reduced top padding from 60px to 20px */
+  overflow: hidden;
+}
+
+
+
+    .hero > * {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeSlideIn 1.2s ease-out forwards;
+    }
+
+    .hero .promo-text { animation-delay: 0.5s; }
+    .hero .winter-title { animation-delay: 1s; }
+    .hero .sale-title { animation-delay: 1.5s; }
+    .hero .discount-text { animation-delay: 2s; }
+    .hero .shop-btn { animation-delay: 2.5s; }
+
+    @keyframes fadeSlideIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .promo-text {
+      color: white;
+      font-size: 16px;
+      margin-bottom: 30px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 400;
+    }
+
+    .winter-title {
+      margin-bottom: 20px;
+      line-height: 1.1;
+    }
+
+    .main-heading {
+      font-family: 'Pacifico', cursive;
+      font-size: 100px;
+      font-weight: 900;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      background: linear-gradient(45deg, #ffffff, #cceeff, #80bfff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+      filter: drop-shadow(0 0 15px rgba(173, 216, 230, 0.6));
+    }
+
+    .sale-title {
+      font-size: 36px;
+      font-family: 'Lobster Two', cursive;
+      letter-spacing: 2px;
+      margin: 10px 0 20px 0;
+      color: white;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .discount-text {
+      font-size: 18px;
+      font-family: 'Quicksand', sans-serif;
+      color: #f0f8ff;
+      margin-bottom: 40px;
+      letter-spacing: 1px;
+    }
+
+    .shop-btn {
+      background: #00bcd4;
+      color: white;
+      padding: 15px 35px;
+      border: none;
+      border-radius: 25px;
+      font-size: 14px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3);
+    }
+
+    .shop-btn:hover {
+      background: #00acc1;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 188, 212, 0.4);
+    }
+
+    .deco-snowflake {
+      position: absolute;
+      color: rgba(255, 255, 255, 0.7);
+      z-index: 2;
+      animation: sparkle 3s ease-in-out infinite;
+    }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.1); }
+    }
+
+    .deco-snowflake:nth-child(1) { top: 15%; left: 8%; font-size: 35px; }
+    .deco-snowflake:nth-child(2) { top: 25%; right: 12%; font-size: 28px; }
+    .deco-snowflake:nth-child(3) { top: 45%; left: 5%; font-size: 40px; }
+    .deco-snowflake:nth-child(4) { top: 65%; right: 8%; font-size: 32px; }
+    .deco-snowflake:nth-child(5) { top: 35%; left: 15%; font-size: 25px; }
+    .deco-snowflake:nth-child(6) { top: 55%; right: 20%; font-size: 30px; }
+  </style>
+</head>
+<body>
+<canvas id="fireworkCanvas"></canvas>
+<audio id="bgAudio" autoplay loop>
+  <source src="sapphire.mp3" type="audio/mpeg" />
+</audio>
+<div class="container">
+  
+  <main class="hero">
+    <div class="promo-text">❄ Warning: Ye jagah itni cute hai ki aap ‘awww’ bolte nahi thakoge! ❄</div>
+    <h1 class="winter-title">
+      <span class="main-heading">SNOW'S WONDERLAND</span>
+    </h1>
+    <h2 class="sale-title">WHERE MAGIC MEETS BIRTHDAY CHEER 🎂</h2>
+    <div class="discount-text">Click karo aur dekho kya surprises rakhe gaye hain sirf tumhare liye! 🎁✨</div>
+    <button class="shop-btn" id="wishBtn">Let the Snow Begin ⛄</button>
+  </main>
+</div>
+<div class="deco-snowflake">❄</div>
+<div class="deco-snowflake">❅</div>
+<div class="deco-snowflake">❄</div>
+<div class="deco-snowflake">❅</div>
+<div class="deco-snowflake">❄</div>
+<div class="deco-snowflake">❅</div>
+<script>
+  function createSnowflake() {
+    const snowflake = document.createElement('div');
+    snowflake.className = 'snowflake';
+    snowflake.innerHTML = Math.random() > 0.5 ? '❄' : '❅';
+    snowflake.style.left = Math.random() * 100 + '%';
+    snowflake.style.top = '-20px';
+    snowflake.style.animationDuration = Math.random() * 4 + 3 + 's';
+    snowflake.style.opacity = Math.random() * 0.6 + 0.3;
+    snowflake.style.fontSize = Math.random() * 8 + 8 + 'px';
+    document.body.appendChild(snowflake);
+    setTimeout(() => {
+      snowflake.remove();
+    }, 7000);
+  }
+
+  setInterval(createSnowflake, 200);
+
+  function createParticles() {
+    for (let i = 0; i < 50; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'bg-particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.top = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 6 + 's';
+      document.body.appendChild(particle);
+    }
+  }
+
+  createParticles();
+
+   document.querySelector('.shop-btn').addEventListener('click', function () {
+    // ✅ Store tick permission for timer.html
+    sessionStorage.setItem("allowTick", "true");
+
+    this.style.transform = 'scale(0.95) translateY(-2px)';
+    setTimeout(() => {
+      this.style.transform = 'translateY(-2px)';
+      window.location.href = "timer.html";
+    }, 300); // wait a moment before redirecting
+  });
+
+
+
+  document.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('mouseenter', function () {
+      this.style.textShadow = '0 0 10px rgba(135, 206, 235, 0.8)';
+    });
+    link.addEventListener('mouseleave', function () {
+      this.style.textShadow = 'none';
+    });
+  });
+
+  const audio = document.getElementById("bgAudio");
+  const savedTime = sessionStorage.getItem("songTime");
+  const shouldPlay = sessionStorage.getItem("songShouldPlay");
+
+  if (shouldPlay === "true" && savedTime !== null) {
+    audio.currentTime = parseFloat(savedTime);
+    audio.play().catch(() => {
+      alert("Tap the screen to resume music 🎵");
+    });
+  }
+
+  // 🎆 Fireworks Background
+  const canvas = document.getElementById("fireworkCanvas");
+  const ctx = canvas.getContext("2d");
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener("resize", resizeCanvas);
+  resizeCanvas();
+
+  const fireworks = [];
+  const particles = [];
+
+  function random(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  function Firework() {
+    this.x = canvas.width / 2;
+    this.y = canvas.height;
+    this.targetX = random(0, canvas.width);
+    this.targetY = random(0, canvas.height / 2);
+    this.speed = 3;
+    this.angle = Math.atan2(this.targetY - this.y, this.targetX - this.x);
+    this.distanceToTarget = Math.hypot(this.targetX - this.x, this.targetY - this.y);
+    this.traveled = 0;
+    this.boomed = false;
+
+    this.update = function () {
+      const vx = Math.cos(this.angle) * this.speed;
+      const vy = Math.sin(this.angle) * this.speed;
+      this.x += vx;
+      this.y += vy;
+      this.traveled += Math.hypot(vx, vy);
+      if (this.traveled >= this.distanceToTarget) {
+        this.boomed = true;
+        for (let i = 0; i < 100; i++) {
+          particles.push(new Particle(this.targetX, this.targetY));
+        }
+      }
+    };
+
+    this.draw = function () {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+      ctx.fillStyle = "white";
+      ctx.fill();
+    };
+  }
+
+  function Particle(x, y) {
+    this.x = x;
+    this.y = y;
+    this.radius = 2;
+    this.speed = random(1, 5);
+    this.angle = random(0, Math.PI * 2);
+    this.life = 100;
+    this.opacity = 1;
+
+    this.update = function () {
+      this.x += Math.cos(this.angle) * this.speed;
+      this.y += Math.sin(this.angle) * this.speed;
+      this.life -= 1;
+      this.opacity = this.life / 100;
+    };
+
+    this.draw = function () {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+      ctx.fill();
+    };
+  }
+
+  function animateFireworks() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (Math.random() < 0.05) {
+      fireworks.push(new Firework());
+    }
+
+    fireworks.forEach((fw, index) => {
+      fw.update();
+      fw.draw();
+      if (fw.boomed) fireworks.splice(index, 1);
+    });
+
+    particles.forEach((p, index) => {
+      p.update();
+      p.draw();
+      if (p.life <= 0) particles.splice(index, 1);
+    });
+
+    requestAnimationFrame(animateFireworks);
+  }
+
+  animateFireworks();
+</script>
+</body>
+</html>

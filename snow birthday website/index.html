@@ -1,0 +1,263 @@
+<head>
+  <meta charset="UTF-8" />
+  <title>Snow's Birthday</title>
+  <link rel="icon" type="image/png" href="snowman.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet" />
+  <style>
+    /* [unchanged CSS] */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Dancing Script", cursive;
+      overflow-x: hidden;
+      background-color: #f0f9ff;
+    }
+    #bgVideo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+      opacity: 1;
+    }
+    .envlope-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    #envelope {
+      position: relative;
+      width: 420px;
+      height: 270px;
+      border-bottom-left-radius: 6px;
+      border-bottom-right-radius: 6px;
+      background-color: #3b82f6;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      transition: transform 0.4s ease;
+    }
+    .front { position: absolute; width: 0; height: 0; z-index: 3; }
+    .flap {
+      border-left: 210px solid transparent;
+      border-right: 210px solid transparent;
+      border-bottom: 120px solid transparent;
+      border-top: 150px solid #3b82f6;
+      transform-origin: top;
+      pointer-events: none;
+    }
+    .pocket {
+      border-left: 210px solid #a5d8ff;
+      border-right: 210px solid #a5d8ff;
+      border-bottom: 130px solid #60a5fa;
+      border-top: 130px solid transparent;
+      border-bottom-left-radius: 6px;
+      border-bottom-right-radius: 6px;
+    }
+    .letter {
+      position: relative;
+      background-color: #fff;
+      width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+      height: 90%;
+      top: 5%;
+      border-radius: 6px;
+      box-shadow: 0 2px 26px rgba(0, 0, 0, 0.12);
+      font-family: "Dancing Script", cursive;
+    }
+    .words {
+      position: absolute;
+      left: 10%;
+      width: 80%;
+      height: 14%;
+      background-color: #e0f2ff;
+    }
+    .words.line1 { top: 10%; font-size: 1.2rem; width: 35%; height: 12%; }
+    .words.line2, .words.line3, .words.line4 {
+      font-size: 1.3rem;
+      text-align: center;
+    }
+    .words.line2 { top: 30%; }
+    .words.line3 { top: 50%; }
+    .words.line4 { top: 70%; }
+
+    .open .flap { transform: rotateX(180deg); transition: transform 0.4s ease, z-index 0.6s; z-index: 1; }
+    .close .flap { transform: rotateX(0deg); transition: transform 0.4s 0.6s ease, z-index 1s; z-index: 5; }
+    .close .letter { transform: translateY(0px); transition: transform 0.4s ease, z-index 1s; z-index: 1; }
+    .open .letter { transform: translateY(-140px); transition: transform 0.4s 0.6s ease, z-index 0.6s; z-index: 2; }
+
+    .button-group {
+      margin-top: 30px;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button.heart-btn.open-close {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      font-size: 16px;
+      font-family: monospace;
+      font-weight: 900;
+      color: #1e3a8a;
+      background-color: #e0f2ff;
+      border: 6px solid #60a5fa;
+      border-radius: 30px;
+      box-shadow: rgba(10, 37, 64, 0.2) 0px -2px 6px inset;
+      cursor: pointer;
+      position: relative;
+      transition: transform 400ms ease, border-color 400ms, background-color 400ms;
+    }
+
+    button.heart-btn.open-close:hover {
+      background-color: #bae6fd;
+      transform: scale(1.05);
+      animation: borderBlinkBlue 3s infinite;
+    }
+
+    @keyframes borderBlinkBlue {
+      0%, 100% { border-color: #60a5fa; }
+      50% { border-color: #3b82f6; }
+    }
+
+    #moreBtn {
+      background: linear-gradient(135deg, #c084fc, #d0f0ff);
+      border: 6px solid #c8e8ff;
+      color: #3b0764;
+      display: none;
+    }
+
+    #moreBtn:hover {
+      background: linear-gradient(135deg, #a78bfa, #bae6fd);
+      transform: scale(1.05);
+      animation: borderBlinkMoreBtn 3s infinite;
+    }
+
+    @keyframes borderBlinkMoreBtn {
+      0%, 100% { border-color: #c8e8ff; }
+      50% { border-color: #a5b4fc; }
+    }
+
+    button.heart-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      font-size: 16px;
+      font-family: monospace;
+      font-weight: 900;
+      border-radius: 30px;
+      box-shadow: rgba(10, 37, 64, 0.2) 0px -2px 6px inset;
+      cursor: pointer;
+      position: relative;
+      transition: transform 400ms ease, border-color 400ms, background-color 400ms;
+    }
+
+    button.heart-btn svg {
+      margin-right: 8px;
+      fill: #ff6e6e;
+      transition: opacity 0.2s ease-in-out;
+    }
+
+    .filled {
+      position: absolute;
+      opacity: 0;
+      top: 12px;
+      left: 14px;
+    }
+
+    button.heart-btn:hover .empty { opacity: 0; }
+    button.heart-btn:hover .filled {
+      opacity: 1;
+      animation: beat 1.2s infinite;
+    }
+
+    @keyframes beat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+  </style>
+</head>
+<body>
+
+<video autoplay muted loop playsinline id="bgVideo">
+  <source src="Purple Pink Cute.mp4" type="video/mp4" />
+</video>
+
+<div class="envlope-wrapper">
+  <div id="envelope" class="close">
+    <div class="front flap"></div>
+    <div class="front pocket"></div>
+    <div class="letter">
+      <div class="words line1">To: Snow</div>
+      <div class="words line2">Here’s your little surprise,</div>
+      <div class="words line3">We’ve waited to show it all,</div>
+      <div class="words line4">Hope it melts your heart</div>
+    </div>
+  </div>
+
+  <div class="button-group">
+    <button class="heart-btn open-close" id="open">❤️ Open</button>
+    <button class="heart-btn" id="moreBtn">💖 Click Here!!</button>
+    <button class="heart-btn open-close" id="reset" style="display:none;">💙 Close</button>
+
+  </div>
+</div>
+
+<audio id="wish-audio">
+  <source src="sapphire.mp3" type="audio/mpeg" />
+  Your browser does not support the audio element.
+</audio>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+  $(document).ready(function () {
+    const envelope = $("#envelope");
+    const openBtn = $("#open");
+    const closeBtn = $("#reset");
+    const moreBtn = $("#moreBtn");
+    const audio = document.getElementById("wish-audio");
+
+    const closeButtonDelay = 7 * 1000; // 🕰️ Change this to any seconds (e.g., 5 * 1000 for 5 sec)
+
+    openBtn.click(function () {
+      envelope.addClass("open").removeClass("close");
+      moreBtn.hide();
+      closeBtn.hide(); // Hide close button immediately
+
+      // ⏳ Show Close button after delay
+      setTimeout(() => {
+        closeBtn.fadeIn();
+      }, closeButtonDelay);
+
+      audio.currentTime = 0;
+      audio.play().catch(err => {
+        console.error("Audio play failed:", err);
+        alert("Please allow audio playback 🎶");
+      });
+    });
+
+    closeBtn.click(function () {
+      envelope.addClass("close").removeClass("open");
+      setTimeout(() => {
+        moreBtn.fadeIn();
+      }, 500);
+    });
+
+    $('#moreBtn').click(function () {
+      sessionStorage.setItem("songTime", audio.currentTime);
+      sessionStorage.setItem("songShouldPlay", "true");
+      window.location.href = 'main.html';
+    });
+  });
+</script>
+
+</script>
+</body>
+</html>
